@@ -12,3 +12,5 @@ Click on an existing marker to move it.
 #### TODO:
  - [ ] Right click markers to remove them
  - [ ] Spawn mid-points between points.
+ - [ ] Mobile support.
+ - [ ] Terrain height calcualtion.

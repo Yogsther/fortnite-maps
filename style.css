@@ -19,6 +19,7 @@ a:hover{
     display: block;
     box-shadow: 0px 0px 10px black;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 body{

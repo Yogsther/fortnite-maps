@@ -36,6 +36,9 @@ canvas.addEventListener("mousemove", e => {
     var y = Math.round(e.clientY - rect.top);
     // Add point
     window.pos = {x: x, y: y};
+    if(getClosestPoint() !== false) canvas.style.cursor = "move"
+        else canvas.style.cursor = "pointer"
+    
     if(mouseDown){
         placeMarker(pos.x, pos.y, activePoint)
     }
