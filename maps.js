@@ -64,13 +64,7 @@ function placeMarker(x, y, id) {
 }
 
 function clear(){
-    points = [{
-        "x": 829,
-        "y": 313
-    }, {
-        "x": 367,
-        "y": 522
-    }];
+    points = [];
 }
 
 
