@@ -41,6 +41,20 @@ canvas.addEventListener("mousemove", e => {
     }
 })
 
+function getClosestPoint(){
+    for(let i = 0; i < points.length; i++){
+        var pointDistance = distanceBetweenTwoPoints(pos.x, pos.y, points[i].x, points[i].y);
+        if(pointDistance < 50) return i;
+    }
+    return false;
+}
+
+function distanceBetweenTwoPoints(x1, y1, x2, y2){
+    var deltaX = Math.abs(x1 - x2);
+    var deltaY = Math.abs(y1 - y2);
+    return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+}
+
 function placeMarker(x, y, id) {
     points[id % points.length] = {
         x: x,
@@ -49,10 +63,27 @@ function placeMarker(x, y, id) {
     calculateDistance();
 }
 
+function clear(){
+    points = [{
+        "x": 829,
+        "y": 313
+    }, {
+        "x": 367,
+        "y": 522
+    }];
+}
+
+
 var mouseDown = false;
 canvas.addEventListener("mousedown", e => {
     mouseDown = true;
-    activePoint++;
+    var closestPoint = getClosestPoint();
+    if(closestPoint === false){
+        points.push({x: pos.x, y: pos.y});
+        activePoint = points.length-1;
+    } else {
+        activePoint = closestPoint;
+    }
 })
 canvas.addEventListener("mouseup", e => {
     mouseDown = false;
@@ -61,9 +92,18 @@ canvas.addEventListener("mouseup", e => {
 
 
 function calculateDistance() {
-    var deltaX = Math.abs(points[0].x - points[1].x);
-    var deltaY = Math.abs(points[0].y - points[1].y);
-    var distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+    //var deltaX = Math.abs(points[0].x - points[1].x);
+    //var deltaY = Math.abs(points[0].y - points[1].y);
+    //var distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+    var distance = 0;
+    for(let i = 1; i < points.length; i++){
+        distance += distanceBetweenTwoPoints(points[i-1].x, points[i-1].y, points[i].x, points[i].y)
+        console.log("---------------------------");
+        console.log("points[i-1].x, points[i-1].y, points[i].x, points[i].y", i, i-1);
+        console.log(points[i-1].x, points[i-1].y, points[i].x, points[i].y);
+        console.log(points);
+    }
+
     window.time = (distance / 97) * 45; // Seconds
     window.meters = (distance / 97) * 250; // Meters
 }
@@ -73,9 +113,12 @@ function draw() {
 
     /* Stroke */
     ctx.beginPath();
+    for (let i = 0; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = "black";
+    ctx.stroke();
     ctx.lineWidth = 3;
     ctx.strokeStyle = "yellow";
-    for (let i = 0; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
     ctx.stroke();
 
     /* Draw pins */

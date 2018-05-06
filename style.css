@@ -15,6 +15,7 @@ a:hover{
 #canvas{
     margin: 0 auto;
     position: relative;
+    margin-top: 20px;
     display: block;
     box-shadow: 0px 0px 10px black;
     border-radius: 5px;
@@ -29,4 +30,10 @@ body{
 
 *{
     font-family: 'Roboto', sans-serif;
+}
+
+#links{
+    display: block;
+    position: relative;
+    margin-top: 10px;
 }
