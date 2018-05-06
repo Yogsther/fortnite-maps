@@ -181,12 +181,13 @@ function draw() {
     ctx.font = "24px 'Roboto', sans-serif";
 
     ctx.fillStyle = "rgba(0,0,0,0.4)";
-    ctx.fillRect(0, 700, 350, 500);
+    ctx.fillRect(0, 750, 300, 300);
 
     ctx.fillStyle = "white";
     ctx.fillText("Distance (meters): " + Math.round(meters), 10, 830);
-    ctx.fillText("Time to run (minutes): " + Math.round((time / 60) * 10) / 10, 10, 790);
-    ctx.fillText("Time to run (seconds): " + Math.round((time) * 10) / 10, 10, 750);
+    //append 0 before seconds if neccessary
+    var formattedSeconds = ("0" + Math.round(time % 60)).slice(-2);
+    ctx.fillText("Time to run: " + Math.floor(time / 60) + ":" + formattedSeconds, 10, 790);
 
     requestAnimationFrame(draw);
 }
