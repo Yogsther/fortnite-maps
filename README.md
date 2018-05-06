@@ -10,6 +10,7 @@ Click anywhere to spawn a new marker.
 Click on an existing marker to move it.
 
 #### TODO:
+ - [ ] Add optional grid
  - [ ] Right click markers to remove them
  - [ ] Spawn mid-points between points.
  - [ ] Mobile support.
