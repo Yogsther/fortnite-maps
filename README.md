@@ -18,3 +18,4 @@ Click on an existing marker to move it.
  - [ ] Spawn mid-points between points
  - [ ] Mobile support.
  - [ ] ~~Terrain height calcualtion.~~ Not needed since traveling with ramps has the same horizontal speed.
+
