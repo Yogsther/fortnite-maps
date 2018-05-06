@@ -1,0 +1,32 @@
+/* Link atrebutes, change color of links */
+
+a:link{
+    color: white;
+}
+
+a:visited{
+    color: white;
+}
+
+a:hover{ 
+    color: white;
+}
+
+#canvas{
+    margin: 0 auto;
+    position: relative;
+    display: block;
+    box-shadow: 0px 0px 10px black;
+    border-radius: 5px;
+}
+
+body{
+    background: #111;
+    width: 1000px;
+    margin: 0 auto;
+    display: block;
+}
+
+*{
+    font-family: 'Roboto', sans-serif;
+}
