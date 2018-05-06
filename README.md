@@ -3,7 +3,7 @@
 
 Try it out: [maps.livfor.it](http://maps.livfor.it)
 
-![Gif showcase](https://media.giphy.com/media/55mAxJ9dls8iBmww7m/giphy.gif)
+![Gif showcase](showcase.gif)
 
 #### How to:
 Click anywhere to spawn a new marker.
