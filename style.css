@@ -12,6 +12,18 @@ a:hover{
     color: white;
 }
 
+*{
+    font-family: 'Roboto', sans-serif;
+    color: white;
+}
+
+body{
+    background: #111;
+    width: 850px;
+    margin: 0 auto;
+    display: block;
+}
+
 #canvas{
     margin: 0 auto;
     position: relative;
@@ -22,16 +34,6 @@ a:hover{
     cursor: pointer;
 }
 
-body{
-    background: #111;
-    width: 1000px;
-    margin: 0 auto;
-    display: block;
-}
-
-*{
-    font-family: 'Roboto', sans-serif;
-}
 
 #links{
     display: block;
