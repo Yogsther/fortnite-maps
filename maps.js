@@ -22,7 +22,8 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 const squareSize = 97;
-const globalScale = .85;
+var globalScale = .85;
+var camera = {x: 0, y: 0};
 
 var mouseDown = false;
 var distances = new Array();
@@ -56,10 +57,12 @@ canvas.addEventListener("mousemove", e => {
     var y = Math.round(e.clientY - rect.top);
 
     window.pos = {
-        x: x,
-        y: y
+        x: x / globalScale,
+        y: y / globalScale
     };
-    currentHoverPoint = getClosestPoint()
+    
+    currentHoverPoint = getClosestPoint();
+
     if (currentHoverPoint !== false) {
         /* User is hovering over a point */
         canvas.style.cursor = "move"
@@ -153,12 +156,18 @@ canvas.addEventListener("mousedown", e => {
 		}
 	}
 })
+
 canvas.addEventListener("mouseup", e => {
     /* Place the marker once mouse has been released. */
 	if(e.button != 2) {
 		mouseDown = false;
 		placeMarker(pos.x, pos.y, activePoint)
 	}
+})
+
+canvas.addEventListener("wheel", e => {
+    globalScale+=e.deltaY * .01 
+    if(globalScale < .85) globalScale = .85;
 })
 
 
@@ -201,7 +210,7 @@ function draw() {
 
     /* Stroke */
     ctx.beginPath();
-    for (let i = 0; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+    for (let i = 0; i < points.length; i++) ctx.lineTo(points[i].x * globalScale, points[i].y * globalScale);
     ctx.lineWidth = 8;
     ctx.strokeStyle = "black";
     ctx.stroke();
@@ -209,7 +218,7 @@ function draw() {
     ctx.strokeStyle = "yellow";
     ctx.stroke();
 	
-    /* Draw pins */
+    /* Draw points */
     paddingX = -25; // Dirty way of aligning to cursor
     paddingY = -39; // Dirty way of aligning to cursor
 	
@@ -222,7 +231,7 @@ function draw() {
         var texture = pin;
         /* Draw selected version of texture it the point is selected or close to cursor */
         if ((currentHoverPoint === i && !mouseDown) || (mouseDown && i == activePoint)) texture = pinSelected;
-        ctx.drawImage(texture, pinCenter.x + paddingX, pinCenter.y + paddingY, pin.width * pinScale, pin.height * pinScale);
+        ctx.drawImage(texture, (pinCenter.x + paddingX) * globalScale, (pinCenter.y + paddingY) * globalScale, pin.width * pinScale, pin.height * pinScale);
     }
 	
 	/* Midpoints */
@@ -239,14 +248,14 @@ function draw() {
             ctx.font = "18px 'Roboto', sans-serif";
             ctx.fillStyle = "#111"; // Shadow
             
-            ctx.fillText(Math.round(distances[i-1]) + "m",pinCenter.x + paddingX + shadowDistance, pinCenter.y + paddingY - 5 ) // Draw shadow for the text
+            ctx.fillText(Math.round(distances[i-1]) + "m", (pinCenter.x * globalScale) + paddingX + shadowDistance, (pinCenter.y * globalScale) + paddingY - 5 ) // Draw shadow for the text
             ctx.fillStyle = "white";
-            ctx.fillText(Math.round(distances[i-1]) + "m",pinCenter.x + paddingX, pinCenter.y + paddingY - 5) // Draw individual distance between points
+            ctx.fillText(Math.round(distances[i-1]) + "m", (pinCenter.x * globalScale) + paddingX, (pinCenter.y * globalScale) + paddingY - 5) // Draw individual distance between points
             
 
             //Could obviously throw in a different texture here.
             if(currentMidPoint == i) texture = pinSelected;
-			ctx.drawImage(texture, pinCenter.x + paddingX, pinCenter.y + paddingY, pin.width * pinScale, pin.height * pinScale);
+			ctx.drawImage(texture, (pinCenter.x + paddingX) * globalScale, (pinCenter.y + paddingY) * globalScale, pin.width * pinScale, pin.height * pinScale);
 		}
 	}
 
