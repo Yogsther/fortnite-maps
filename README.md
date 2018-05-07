@@ -10,6 +10,7 @@ Try it out: [maps.livfor.it](http://maps.livfor.it)
 #### How to:
 Click anywhere to spawn a new marker.
 Click on an existing marker to move it.
+Right click on a marker to delete it.
 
 #### TODO:
  - [x] Scale down the canvas
