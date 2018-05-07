@@ -1,14 +1,14 @@
-/** 
+/**
  * FortniteMaps
  * Created by Yogsther 06/08-18
- * Fortnite Distance and ETA calculator 
+ * Fortnite Distance and ETA calculator
  */
 
-/* 
+/*
     Measurements: (From image)
-    One square: 3.42cm 
+    One square: 3.42cm
     Entire map: 35.28cm
-    
+
     Canvas size: 1000px
     (35,28 / 3,45 = 10,31 => 1000 / 10,31 = 96,99 => 97)
     Square resized: 97px
@@ -60,7 +60,7 @@ canvas.addEventListener("mousemove", e => {
         x: x / globalScale,
         y: y / globalScale
     };
-    
+
     currentHoverPoint = getClosestPoint();
 
     if (currentHoverPoint !== false) {
@@ -99,7 +99,7 @@ function getClosestMidPoint(){
             y: ((points[i].y + points[i - 1].y) / 2)
         }
         var distanceFromCursor = distanceBetweenTwoPoints(pinCenter.x, pinCenter.y, pos.x, pos.y);
-        if(distanceFromCursor < 50) return i; 
+        if(distanceFromCursor < 50) return i;
         }
     return false;
     }
@@ -166,7 +166,7 @@ canvas.addEventListener("mouseup", e => {
 })
 
 canvas.addEventListener("wheel", e => {
-    globalScale+=e.deltaY * .01 
+    globalScale+=e.deltaY * .01
     if(globalScale < .85) globalScale = .85;
 })
 
@@ -217,11 +217,11 @@ function draw() {
     ctx.lineWidth = 3;
     ctx.strokeStyle = "yellow";
     ctx.stroke();
-	
+
     /* Draw points */
     paddingX = -25; // Dirty way of aligning to cursor
     paddingY = -39; // Dirty way of aligning to cursor
-	
+
     pinScale = .05;
     for (let i = 0; i < points.length; i++) {
         pinCenter = {
@@ -233,7 +233,7 @@ function draw() {
         if ((currentHoverPoint === i && !mouseDown) || (mouseDown && i == activePoint)) texture = pinSelected;
         ctx.drawImage(texture, (pinCenter.x + paddingX) * globalScale, (pinCenter.y + paddingY) * globalScale, pin.width * pinScale, pin.height * pinScale);
     }
-	
+
 	/* Midpoints */
 	if(drawMidpoints) {
 		pinScale = .025;
@@ -247,11 +247,11 @@ function draw() {
             ctx.textAlign = "center";
             ctx.font = "18px 'Roboto', sans-serif";
             ctx.fillStyle = "#111"; // Shadow
-            
-            ctx.fillText(Math.round(distances[i-1]) + "m", (pinCenter.x * globalScale) + paddingX + shadowDistance, (pinCenter.y * globalScale) + paddingY - 5 ) // Draw shadow for the text
+
+            ctx.fillText(Math.round(distances[i - 1] / squareSize / globalScale * 125) + "m", (pinCenter.x * globalScale) + paddingX + shadowDistance, (pinCenter.y * globalScale) + paddingY - 5 ) // Draw shadow for the text
             ctx.fillStyle = "white";
-            ctx.fillText(Math.round(distances[i-1]) + "m", (pinCenter.x * globalScale) + paddingX, (pinCenter.y * globalScale) + paddingY - 5) // Draw individual distance between points
-            
+            ctx.fillText(Math.round(distances[i - 1] / squareSize / globalScale * 125) + "m", (pinCenter.x * globalScale) + paddingX, (pinCenter.y * globalScale) + paddingY - 5) // Draw individual distance between points
+
 
             //Could obviously throw in a different texture here.
             if(currentMidPoint == i) texture = pinSelected;
