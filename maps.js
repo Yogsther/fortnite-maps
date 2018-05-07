@@ -23,6 +23,7 @@ const ctx = canvas.getContext("2d");
 
 const squareSize = 97;
 var globalScale = .85;
+/* Left-top corner of the camera  */
 var camera = {x: 0, y: 0};
 
 var mouseDown = false;
@@ -50,16 +51,19 @@ window.onload = function () {
     draw();
 }
 
+
 canvas.addEventListener("mousemove", e => {
     /* Get X and Y coordinates for the mouse */
     var rect = canvas.getBoundingClientRect();
     var x = Math.round(e.clientX - rect.left);
     var y = Math.round(e.clientY - rect.top);
 
+    
     window.pos = {
-        x: x / globalScale,
-        y: y / globalScale
+        x: (x / globalScale) - camera.x,
+        y: (y / globalScale) - camera.y
     };
+    //console.log(pos);
 
     currentHoverPoint = getClosestPoint();
 
@@ -168,23 +172,21 @@ canvas.addEventListener("mouseup", e => {
 	}
 })
 
-canvas.addEventListener("wheel", e => {
-    globalScale+=e.deltaY * .01
+/* canvas.addEventListener("wheel", e => {
+    globalScale-=e.deltaY * .01
     if(globalScale < .85) globalScale = .85;
-})
+    focusCameraCenter(pos.x, pos.y);
+}) */
 
 
 function calculateDistance() {
     var distance = 0;
     distances = []; // Clear
-    console.log("------------");
     for (let i = 1; i < points.length; i++) {
         var d = distanceBetweenTwoPoints(points[i - 1].x, points[i - 1].y, points[i].x, points[i].y)
         distance += d
-        console.log(d);
         distances.push(d);
     }
-    console.log("="+distance);
     distance = (distance * .85) / globalScale;
 
     window.time = (distance / squareSize) * 45; // Seconds
@@ -199,9 +201,26 @@ function showMidpoints(bool) {
     drawMidpoints = bool;
 }
 
+function focusCameraCenter(x, y){
+    // Focus the center of the camera on this point
+    
+    camera.x += x * globalScale - ((canvas.width/4) * globalScale);
+    console.log(x);
+    camera.y = (canvas.height/2 * globalScale - (y * globalScale));
+    //console.log({x: x, y: y, camera_x: camera.x, camera_y: camera.y, scale: globalScale});
+    while(camera.x > 0) camera.x--;
+    while(camera.x < -1000) camera.x++;
+    while(camera.y > 0) camera.y--;
+    while(camera.y < -1000) camera.y++;
+
+    if(Math.round(globalScale * 100) / 100 == .85) camera = {x:0,y:0} // Reset
+    //while(camera.x > 1000) camera.x--;
+}
 
 function draw() {
-    ctx.drawImage(map, 0, 0, map.width * globalScale, map.height * globalScale); /* Draw map */
+    /* Global camera offset for every element that should move with the camera zoom! */
+
+    ctx.drawImage(map, 0 + camera.x, 0 + camera.y, 1000 * globalScale, 1000 * globalScale); /* Draw map */
 
     if (drawGrid) {
         /* Grid */
@@ -209,14 +228,14 @@ function draw() {
         var gridOffsetY = 26 * globalScale;
         for (let i = gridOffsetX; i < canvas.width; i += squareSize * globalScale) {
             ctx.fillStyle = "rgba(50,50,50,0.6)";
-            ctx.fillRect(i, 0, 1, canvas.height);
-            ctx.fillRect(0, i + gridOffsetY, canvas.width, 1);
+            ctx.fillRect(i + camera.x, 0 + camera.y, 1, canvas.height);
+            ctx.fillRect(0 + camera.x, i + gridOffsetY + camera.y, canvas.width, 1);
         }
     }
 
     /* Stroke */
     ctx.beginPath();
-    for (let i = 0; i < points.length; i++) ctx.lineTo(points[i].x * globalScale, points[i].y * globalScale);
+    for (let i = 0; i < points.length; i++) ctx.lineTo((camera.x+points[i].x) * globalScale, (camera.y+points[i].y) * globalScale);
     ctx.lineWidth = 8;
     ctx.strokeStyle = "black";
     ctx.stroke();
@@ -237,7 +256,7 @@ function draw() {
         var texture = pin;
         /* Draw selected version of texture it the point is selected or close to cursor */
         if ((currentHoverPoint === i && !mouseDown) || (mouseDown && i == activePoint)) texture = pinSelected;
-        ctx.drawImage(texture, (pinCenter.x + paddingX) * globalScale, (pinCenter.y + paddingY) * globalScale, pin.width * pinScale, pin.height * pinScale);
+        ctx.drawImage(texture, (pinCenter.x + paddingX + camera.x) * globalScale, (pinCenter.y + paddingY + camera.y) * globalScale, pin.width * pinScale, pin.height * pinScale);
     }
 
 	/* Midpoints */
@@ -256,14 +275,14 @@ function draw() {
 
             //console.log(distances);
             var text =  (Math.round((distances[i - 1] / squareSize )* 250)) + "m";
-            ctx.fillText(text, (pinCenter.x * globalScale) + paddingX + shadowDistance, (pinCenter.y * globalScale) + paddingY - 5 ) // Draw shadow for the text
+            ctx.fillText(text, ((camera.x+pinCenter.x) * globalScale) + paddingX + shadowDistance, ((camera.y+pinCenter.y) * globalScale) + paddingY - 5 ) // Draw shadow for the text
             ctx.fillStyle = "white";
-            ctx.fillText(text, (pinCenter.x * globalScale) + paddingX, (pinCenter.y * globalScale) + paddingY - 5) // Draw individual distance between points
+            ctx.fillText(text, ((camera.x+pinCenter.x) * globalScale) + paddingX, ((camera.y+pinCenter.y) * globalScale) + paddingY - 5 ) // Draw individual distance between points
 
 
             //Could obviously throw in a different texture here.
             if(currentMidPoint == i) texture = pinSelected;
-			ctx.drawImage(texture, (pinCenter.x + paddingX) * globalScale, (pinCenter.y + paddingY) * globalScale, pin.width * pinScale, pin.height * pinScale);
+			ctx.drawImage(texture, (pinCenter.x + paddingX + camera.x) * globalScale, (pinCenter.y + paddingY + camera.y) * globalScale, pin.width * pinScale, pin.height * pinScale);
 		}
 	}
 
