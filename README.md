@@ -14,7 +14,7 @@ Click on an existing marker to move it.
 #### TODO:
  - [x] Scale down the canvas
  - [x] Add an optional grid
- - [ ] Right click markers to remove them
+ - [X] Right click markers to remove them
  - [ ] Spawn mid-points between points
  - [ ] Mobile support.
  - [ ] ~~Terrain height calcualtion.~~ Not needed since traveling with ramps has the same horizontal speed.
