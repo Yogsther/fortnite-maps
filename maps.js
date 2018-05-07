@@ -70,6 +70,10 @@ canvas.addEventListener("mousemove", e => {
     }
 })
 
+canvas.oncontextmenu = function(e) {
+    e.preventDefault();
+};
+
 function getClosestPoint() {
     for (let i = 0; i < points.length; i++) {
         var pointDistance = distanceBetweenTwoPoints(pos.x, pos.y, points[i].x, points[i].y);
@@ -98,24 +102,31 @@ function clear() {
     points = [];
 }
 
-
 canvas.addEventListener("mousedown", e => {
-    mouseDown = true;
-    var closestPoint = getClosestPoint();
-    if (closestPoint === false) {
-        points.push({
-            x: pos.x,
-            y: pos.y
-        });
-        activePoint = points.length - 1;
-    } else {
-        activePoint = closestPoint;
-    }
+	var closestPoint = getClosestPoint();
+	if(e.button != 2) {
+		mouseDown = true;
+		if (closestPoint === false) {
+			points.push({
+				x: pos.x,
+				y: pos.y
+			});
+			activePoint = points.length - 1;
+		} else {
+			activePoint = closestPoint;
+		}
+	} else {
+		if (closestPoint !== false) {
+			points.splice(closestPoint, 1);
+		}
+	}
 })
 canvas.addEventListener("mouseup", e => {
-    mouseDown = false;
     /* Place the marker once mouse has been released. */
-    placeMarker(pos.x, pos.y, activePoint)
+	if(e.button != 2) {
+		mouseDown = false;
+		placeMarker(pos.x, pos.y, activePoint)
+	}
 })
 
 
