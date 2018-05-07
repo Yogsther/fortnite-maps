@@ -26,9 +26,12 @@ Right click on a marker to delete it.
  - [X] Right click markers to remove them
  - [X] Spawn mid-points between points
  - [ ] Zoom and pan features (IN-PROGRESS)
+ - [ ] Map option (choose from what season you want the map to be displayed from)
  - [ ] Iframe embed support
  - [ ] Mobile support.
  - [ ] Package electron app
  - [ ] Optmize unnecessary big texture sizes
  - [ ] ~~Terrain height calcualtion.~~ Not needed since traveling with ramps has the same horizontal speed.
 
+#### Known bugs: 
+ currently, none :)

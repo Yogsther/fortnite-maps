@@ -124,6 +124,7 @@ function clear() {
     /* Clear all points */
     points = [];
     activePoint = 0;
+    calculateDistance();
 }
 
 canvas.addEventListener("mousedown", e => {
@@ -176,12 +177,15 @@ canvas.addEventListener("wheel", e => {
 function calculateDistance() {
     var distance = 0;
     distances = []; // Clear
+    console.log("------------");
     for (let i = 1; i < points.length; i++) {
         var d = distanceBetweenTwoPoints(points[i - 1].x, points[i - 1].y, points[i].x, points[i].y)
         distance += d
+        console.log(d);
         distances.push(d);
     }
-    distance /= globalScale;
+    console.log("="+distance);
+    distance = (distance * .85) / globalScale;
 
     window.time = (distance / squareSize) * 45; // Seconds
     window.meters = (distance / squareSize) * 250; // Meters
@@ -250,9 +254,11 @@ function draw() {
             ctx.font = "18px 'Roboto', sans-serif";
             ctx.fillStyle = "#111"; // Shadow
 
-            ctx.fillText(Math.round(distances[i - 1] / squareSize / globalScale * 125) + "m", (pinCenter.x * globalScale) + paddingX + shadowDistance, (pinCenter.y * globalScale) + paddingY - 5 ) // Draw shadow for the text
+            //console.log(distances);
+            var text =  (Math.round((distances[i - 1] / squareSize )* 250)) + "m";
+            ctx.fillText(text, (pinCenter.x * globalScale) + paddingX + shadowDistance, (pinCenter.y * globalScale) + paddingY - 5 ) // Draw shadow for the text
             ctx.fillStyle = "white";
-            ctx.fillText(Math.round(distances[i - 1] / squareSize / globalScale * 125) + "m", (pinCenter.x * globalScale) + paddingX, (pinCenter.y * globalScale) + paddingY - 5) // Draw individual distance between points
+            ctx.fillText(text, (pinCenter.x * globalScale) + paddingX, (pinCenter.y * globalScale) + paddingY - 5) // Draw individual distance between points
 
 
             //Could obviously throw in a different texture here.
