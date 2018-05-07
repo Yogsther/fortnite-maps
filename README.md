@@ -28,6 +28,7 @@ Right click on a marker to delete it.
  - [ ] Zoom and pan features (IN-PROGRESS)
  - [ ] Iframe embed support
  - [ ] Mobile support.
+ - [ ] Package electron app
  - [ ] Optmize unnecessary big texture sizes
  - [ ] ~~Terrain height calcualtion.~~ Not needed since traveling with ramps has the same horizontal speed.
 
