@@ -27,6 +27,7 @@ const globalScale = .85;
 var mouseDown = false;
 var currentHoverPoint = -1;
 var drawGrid = true;
+var drawMidpoints = true;
 
 window.onload = function () {
     /* Current active point */
@@ -148,6 +149,11 @@ function toggleGrid(bool) {
     drawGrid = bool;
 }
 
+function showMidpoints(bool) {
+    drawMidpoints = bool;
+}
+
+
 function draw() {
     ctx.drawImage(map, 0, 0, map.width * globalScale, map.height * globalScale);
 
@@ -172,12 +178,13 @@ function draw() {
     ctx.lineWidth = 3;
     ctx.strokeStyle = "yellow";
     ctx.stroke();
-
+	
     /* Draw pins */
-    paddingX = -23.5; // Dirty way of aligning to cursor
-    paddingY = -51; // Dirty way of aligning to cursor
+    paddingX = -25; // Dirty way of aligning to cursor
+    paddingY = -39; // Dirty way of aligning to cursor
+	
+    pinScale = .05;
     for (let i = 0; i < points.length; i++) {
-        pinScale = .05;
         pinCenter = {
             x: points[i].x + ((pin.width / 2) * pinScale),
             y: points[i].y + (pin.height * pinScale)
@@ -187,6 +194,20 @@ function draw() {
         if ((currentHoverPoint === i && !mouseDown) || (mouseDown && i == activePoint)) texture = pinSelected;
         ctx.drawImage(texture, pinCenter.x + paddingX, pinCenter.y + paddingY, pin.width * pinScale, pin.height * pinScale);
     }
+	
+	/* Midpoints */
+	if(drawMidpoints) {
+		pinScale = .025;
+		for(let i = 1; i < points.length; i++) {
+			pinCenter = {
+				x: ((points[i].x + points[i - 1].x) / 2) + (1.5 * pin.width * pinScale),
+				y: ((points[i].y + points[i - 1].y) / 2) + (2.5 * pin.height * pinScale)
+			}
+			var texture = pin;
+			//Could obviously throw in a different texture here.
+			ctx.drawImage(texture, pinCenter.x + paddingX, pinCenter.y + paddingY, pin.width * pinScale, pin.height * pinScale);
+		}
+	}
 
     ctx.textAlign = "left";
     ctx.font = "24px 'Roboto', sans-serif";
