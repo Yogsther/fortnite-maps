@@ -10,12 +10,13 @@ Try it out: [maps.livfor.it](http://maps.livfor.it)
 #### How to:
 Click anywhere to spawn a new marker.
 Click on an existing marker to move it.
+Right click on a marker to delete it.
 
 #### TODO:
  - [x] Scale down the canvas
  - [x] Add an optional grid
- - [ ] Right click markers to remove them
- - [ ] Spawn mid-points between points
+ - [X] Right click markers to remove them
+ - [X] Spawn mid-points between points
  - [ ] Mobile support.
  - [ ] ~~Terrain height calcualtion.~~ Not needed since traveling with ramps has the same horizontal speed.
 
