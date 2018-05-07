@@ -120,12 +120,20 @@ function placeMarker(x, y, id) {
 function clear() {
     /* Clear all points */
     points = [];
+    activePoint = 0;
 }
 
 canvas.addEventListener("mousedown", e => {
 	var closestPoint = getClosestPoint();
 	if(e.button != 2) {
         mouseDown = true;
+        if(points.length < 1){
+            // Allow draw out points if there are none placed.
+            points.push({x: pos.x, y: pos.y});
+            points.push({x: pos.x, y: pos.y});
+            activePoint++;
+            return;
+        }
         if(currentMidPoint !== false){
             // !== needed, since !currentMidPoint will return true if the current mid-point is 0!
             points.splice(currentMidPoint, 0, {x: pos.x, y: pos.y});
@@ -134,10 +142,10 @@ canvas.addEventListener("mousedown", e => {
 			points.push({
 				x: pos.x,
 				y: pos.y
-			});
+            });
 			activePoint = points.length - 1;
-		} else {
-			activePoint = closestPoint;
+		} else if(closestPoint !== false) {
+            activePoint = closestPoint;
 		}
 	} else {
 		if (closestPoint !== false) {
@@ -178,7 +186,7 @@ function showMidpoints(bool) {
 
 
 function draw() {
-    ctx.drawImage(map, 0, 0, map.width * globalScale, map.height * globalScale);
+    ctx.drawImage(map, 0, 0, map.width * globalScale, map.height * globalScale); /* Draw map */
 
     if (drawGrid) {
         /* Grid */
