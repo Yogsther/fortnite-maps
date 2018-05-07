@@ -129,32 +129,34 @@ function clear() {
 canvas.addEventListener("mousedown", e => {
 	var closestPoint = getClosestPoint();
 	if(e.button != 2) {
-        mouseDown = true;
-        if(points.length < 1){
-            // Allow draw out points if there are none placed.
-            points.push({x: pos.x, y: pos.y});
-            points.push({x: pos.x, y: pos.y});
-            activePoint++;
-            return;
+      mouseDown = true;
+      if(points.length < 1){
+          // Allow draw out points if there are none placed.
+          points.push({x: pos.x, y: pos.y});
+          points.push({x: pos.x, y: pos.y});
+          activePoint++;
+          return;
+      }
+      if(closestPoint !== false) {
+          activePoint = closestPoint;
+      }
+      else if(currentMidPoint !== false) {
+          // !== needed, since !currentMidPoint will return true if the current mid-point is 0!
+          points.splice(currentMidPoint, 0, {x: pos.x, y: pos.y});
+          activePoint = currentMidPoint;
+      }
+      else if (closestPoint === false) {
+        	points.push({
+        		  x: pos.x,
+        		  y: pos.y
+          });
+        	activePoint = points.length - 1;
         }
-        if(currentMidPoint !== false){
-            // !== needed, since !currentMidPoint will return true if the current mid-point is 0!
-            points.splice(currentMidPoint, 0, {x: pos.x, y: pos.y});
-            activePoint = currentMidPoint;
-        } else if (closestPoint === false) {
-			points.push({
-				x: pos.x,
-				y: pos.y
-            });
-			activePoint = points.length - 1;
-		} else if(closestPoint !== false) {
-            activePoint = closestPoint;
-		}
-	} else {
-		if (closestPoint !== false) {
-			points.splice(closestPoint, 1);
-		}
-	}
+      } else {
+          if (closestPoint !== false) {
+              points.splice(closestPoint, 1);
+          }
+      }
 })
 
 canvas.addEventListener("mouseup", e => {
