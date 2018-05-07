@@ -25,9 +25,12 @@ const squareSize = 97;
 const globalScale = .85;
 
 var mouseDown = false;
+var distances = new Array();
 var currentHoverPoint = -1;
+var currentMidPoint = -1; // Only positive if the user is hovering over a mid-point.
 var drawGrid = true;
 var drawMidpoints = true;
+
 
 window.onload = function () {
     /* Current active point */
@@ -65,6 +68,8 @@ canvas.addEventListener("mousemove", e => {
         canvas.style.cursor = "pointer"
     }
 
+    currentMidPoint = getClosestMidPoint();
+
     if (mouseDown) {
         /* If the mouse is down, continuously place the marker to update it's location to give it the drag feel. */
         placeMarker(pos.x, pos.y, activePoint)
@@ -81,6 +86,20 @@ function getClosestPoint() {
         if (pointDistance < 50) return i; /* Return what point the user is hovering over. */
     }
     return false; /* User is not hovering over a point */
+}
+
+function getClosestMidPoint(){
+    if(points.length > 1){ /* Only check for mid-points if there are more than 1 point */
+    for(let i = 1; i < points.length; i++){
+        pinCenter = {
+            x: ((points[i].x + points[i - 1].x) / 2),
+            y: ((points[i].y + points[i - 1].y) / 2)
+        }
+        var distanceFromCursor = distanceBetweenTwoPoints(pinCenter.x, pinCenter.y, pos.x, pos.y);
+        if(distanceFromCursor < 50) return i; 
+        }
+    return false;
+    }
 }
 
 function distanceBetweenTwoPoints(x1, y1, x2, y2) {
@@ -106,8 +125,12 @@ function clear() {
 canvas.addEventListener("mousedown", e => {
 	var closestPoint = getClosestPoint();
 	if(e.button != 2) {
-		mouseDown = true;
-		if (closestPoint === false) {
+        mouseDown = true;
+        if(currentMidPoint !== false){
+            // !== needed, since !currentMidPoint will return true if the current mid-point is 0!
+            points.splice(currentMidPoint, 0, {x: pos.x, y: pos.y});
+            activePoint = currentMidPoint;
+        } else if (closestPoint === false) {
 			points.push({
 				x: pos.x,
 				y: pos.y
@@ -132,12 +155,12 @@ canvas.addEventListener("mouseup", e => {
 
 
 function calculateDistance() {
-    //var deltaX = Math.abs(points[0].x - points[1].x);
-    //var deltaY = Math.abs(points[0].y - points[1].y);
-    //var distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
     var distance = 0;
+    distances = []; // Clear
     for (let i = 1; i < points.length; i++) {
-        distance += distanceBetweenTwoPoints(points[i - 1].x, points[i - 1].y, points[i].x, points[i].y)
+        var d = distanceBetweenTwoPoints(points[i - 1].x, points[i - 1].y, points[i].x, points[i].y)
+        distance += d
+        distances.push(d);
     }
     distance /= globalScale;
 
@@ -167,7 +190,6 @@ function draw() {
             ctx.fillRect(0, i + gridOffsetY, canvas.width, 1);
         }
     }
-
 
     /* Stroke */
     ctx.beginPath();
@@ -204,7 +226,18 @@ function draw() {
 				y: ((points[i].y + points[i - 1].y) / 2) + (2.5 * pin.height * pinScale)
 			}
 			var texture = pin;
-			//Could obviously throw in a different texture here.
+            var shadowDistance = 1.8; // px
+            ctx.textAlign = "center";
+            ctx.font = "18px 'Roboto', sans-serif";
+            ctx.fillStyle = "#111"; // Shadow
+            
+            ctx.fillText(Math.round(distances[i-1]) + "m",pinCenter.x + paddingX + shadowDistance, pinCenter.y + paddingY - 5 ) // Draw shadow for the text
+            ctx.fillStyle = "white";
+            ctx.fillText(Math.round(distances[i-1]) + "m",pinCenter.x + paddingX, pinCenter.y + paddingY - 5) // Draw individual distance between points
+            
+
+            //Could obviously throw in a different texture here.
+            if(currentMidPoint == i) texture = pinSelected;
 			ctx.drawImage(texture, pinCenter.x + paddingX, pinCenter.y + paddingY, pin.width * pinScale, pin.height * pinScale);
 		}
 	}

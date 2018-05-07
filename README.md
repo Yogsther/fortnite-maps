@@ -12,6 +12,14 @@ Click anywhere to spawn a new marker.
 Click on an existing marker to move it.
 Right click on a marker to delete it.
 
+#### Recently added: 
+ - Mid-points:
+    - Click in the middle of a path to create a new point!
+    - Displays length between each point
+ - Right-click markers to remove them
+ - Optional grid
+ - Better distance presentation
+
 #### TODO:
  - [x] Scale down the canvas
  - [x] Add an optional grid
