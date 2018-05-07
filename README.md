@@ -34,4 +34,4 @@ Right click on a marker to delete it.
  - [ ] ~~Terrain height calcualtion.~~ Not needed since traveling with ramps has the same horizontal speed.
 
 #### Known bugs: 
- currently, none :)
+ - A lot of bugs in the zoom-and-pan features, but they are currently being worked on! 
