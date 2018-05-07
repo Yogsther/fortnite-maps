@@ -18,5 +18,6 @@ Right click on a marker to delete it.
  - [X] Right click markers to remove them
  - [X] Spawn mid-points between points
  - [ ] Mobile support.
+ - [ ] Optmize unnecessary big texture sizes
  - [ ] ~~Terrain height calcualtion.~~ Not needed since traveling with ramps has the same horizontal speed.
 
