@@ -53,46 +53,64 @@ window.onload = function () {
     draw();
 }
 
+canvas.addEventListener("touchmove", e => {
+    mouseMove(e);
+    console.log("boi");
+})
+
+canvas.addEventListener("touchstart", e => {
+    mouseDownTrigger();
+    console.log("Down", mouseDown);
+})
+
+canvas.addEventListener("touchend", e => {
+    mouseUpTrigger();
+    console.log("up", mouseDown);
+})
 
 canvas.addEventListener("mousemove", e => {
-    /* Get X and Y coordinates for the mouse */
-    var rect = canvas.getBoundingClientRect();
-    var x = Math.round(e.clientX - rect.left);
-    var y = Math.round(e.clientY - rect.top);
-
-    
-    window.pos = {
-        x: (x / globalScale) - camera.x,
-        y: (y / globalScale) - camera.y
-    };
-    //console.log(pos);
-
-    currentHoverPoint = getClosestPoint();
-
-    if (currentHoverPoint !== false) {
-        /* User is hovering over a point */
-        canvas.style.cursor = "move"
-    } else {
-        /* User is not hovering over a point */
-        canvas.style.cursor = "pointer"
-    }
-
-    currentMidPoint = getClosestMidPoint();
-
-     if(secondMouseDown && false /*Prevent for now*/){
-        // Move position
-        camera.x += (pos.x + rightClickDelta.x);
-        camera.y += (pos.y + rightClickDelta.y);
-
-        rightClickDelta = Object.assign({}, pos); /* Copy current mouse position */
-        //restrictCamera();
-    }
-
-    if (mouseDown) {
-        /* If the mouse is down, continuously place the marker to update it's location to give it the drag feel. */
-        placeMarker(pos.x, pos.y, activePoint)
-    }
+    mouseMove(e);
 })
+
+function mouseMove(e){
+/* Get X and Y coordinates for the mouse */
+var rect = canvas.getBoundingClientRect();
+var x = Math.round(e.clientX - rect.left);
+var y = Math.round(e.clientY - rect.top);
+
+
+window.pos = {
+    x: (x / globalScale) - camera.x,
+    y: (y / globalScale) - camera.y
+};
+//console.log(pos);
+
+currentHoverPoint = getClosestPoint();
+
+if (currentHoverPoint !== false) {
+    /* User is hovering over a point */
+    canvas.style.cursor = "move"
+} else {
+    /* User is not hovering over a point */
+    canvas.style.cursor = "pointer"
+}
+
+currentMidPoint = getClosestMidPoint();
+
+ if(secondMouseDown && false /*Prevent for now*/){
+    // Move position
+    camera.x += (pos.x + rightClickDelta.x);
+    camera.y += (pos.y + rightClickDelta.y);
+
+    rightClickDelta = Object.assign({}, pos); /* Copy current mouse position */
+    //restrictCamera();
+}
+
+if (mouseDown) {
+    /* If the mouse is down, continuously place the marker to update it's location to give it the drag feel. */
+    placeMarker(pos.x, pos.y, activePoint)
+}
+}
 
 canvas.oncontextmenu = function(e) {
     e.preventDefault();
@@ -142,33 +160,42 @@ function clear() {
     calculateDistance();
 }
 
+function mouseDownTrigger(){
+    var closestPoint = getClosestPoint();
+    mouseDown = true;
+    if(points.length < 1){
+        // Allow draw out points if there are none placed.
+        points.push({x: pos.x, y: pos.y});
+        points.push({x: pos.x, y: pos.y});
+        activePoint++;
+        return;
+    }
+    if(closestPoint !== false) {
+        activePoint = closestPoint;
+    }
+    else if(currentMidPoint !== false) {
+        // !== needed, since !currentMidPoint will return true if the current mid-point is 0!
+        points.splice(currentMidPoint, 0, {x: pos.x, y: pos.y});
+        activePoint = currentMidPoint;
+    }
+    else if (closestPoint === false) {
+          points.push({
+                x: pos.x,
+                y: pos.y
+        });
+          activePoint = points.length - 1;
+      }
+}
+
+function mouseUpTrigger(){
+    secondMouseDown = false;
+    mouseDown = false;
+}
 canvas.addEventListener("mousedown", e => {
-	var closestPoint = getClosestPoint();
 	if(e.button != 2) {
-      mouseDown = true;
-      if(points.length < 1){
-          // Allow draw out points if there are none placed.
-          points.push({x: pos.x, y: pos.y});
-          points.push({x: pos.x, y: pos.y});
-          activePoint++;
-          return;
-      }
-      if(closestPoint !== false) {
-          activePoint = closestPoint;
-      }
-      else if(currentMidPoint !== false) {
-          // !== needed, since !currentMidPoint will return true if the current mid-point is 0!
-          points.splice(currentMidPoint, 0, {x: pos.x, y: pos.y});
-          activePoint = currentMidPoint;
-      }
-      else if (closestPoint === false) {
-        	points.push({
-        		  x: pos.x,
-        		  y: pos.y
-          });
-        	activePoint = points.length - 1;
-        }
+      mouseDownTrigger();
       } else {
+        var closestPoint = getClosestPoint();
           secondMouseDown = true;
           rightClickDelta = Object.assign({}, pos); /* Copy current mouse position */
           if (closestPoint !== false) {
@@ -181,8 +208,7 @@ canvas.addEventListener("mousedown", e => {
 
 canvas.addEventListener("mouseup", e => {
     /* Place the marker once mouse has been released. */
-    secondMouseDown = false;
-    mouseDown = false;
+    mouseUpTrigger();
     if(e.button != 2) {
 		placeMarker(pos.x, pos.y, activePoint)
 	}

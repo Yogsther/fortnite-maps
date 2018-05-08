@@ -33,7 +33,6 @@ Example: [maps.livfor.it/embed_example](http://maps.livfor.it/embed_example)
 ```html
     <!-- Embed Fortnite Maps -->
     <iframe src="http://maps.livfor.it/embed.html" width="600" height="650" style="border:none; box-shadow:0px 0px 5px rgba(0,0,0,0.7); border-radius:2px;"></iframe>
-
 ```
 
 #### TODO:
@@ -44,9 +43,9 @@ Example: [maps.livfor.it/embed_example](http://maps.livfor.it/embed_example)
 - [x]  Spawn mid-points between points
 - [x]  Map option (choose from what season you want the map to be displayed from)
 - [x]  Iframe embed support
+- [ ]  Mobile support (& Manifesto).
 - [ ]  Optimize hud, fewer links with overlay toggle for options menu
 - [ ]  Zoom and pan features (IN-PROGRESS)
-- [ ]  Mobile support.
 - [ ]  Package electron app
 - [ ]  Optmize unnecessary big texture sizes
 - [ ]  ~~Terrain height calcualtion.~~ Not needed since traveling with ramps has the same horizontal speed.
