@@ -29,9 +29,11 @@ Just paste the iframe code below in the body. You can change the height and widt
 sure that the height is at least 100px bigger than the width (to make room for the options menu below!);
 Example: [maps.livfor.it/embed_example](http://maps.livfor.it/embed_example.html)
 ```html
-    <!-- Embed Fortnite Maps -->
-    <iframe src="http://maps.livfor.it/embed.html" width="600" height="650" style="border:none; box-shadow:0px 0px 5px rgba(0,0,0,0.7); border-radius:2px;"></iframe>
+<!-- (HTTPS) Embed Fortnite Maps -->
+<iframe src="https://yogsther.github.io/embed-fortnite-maps/embed.html" width="600" height="650" style="border:none; box-shadow:0px 0px 5px rgba(0,0,0,0.7); border-radius:2px;"></iframe>
 
+<!-- (HTTP) Embed Fortnite Maps -->
+<iframe src="http://maps.livfor.it/embed.html" width="600" height="650" style="border:none; box-shadow:0px 0px 5px rgba(0,0,0,0.7); border-radius:2px;"></iframe>
 ```
 
 #### TODO:
