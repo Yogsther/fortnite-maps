@@ -1,8 +1,6 @@
-## Fortnite Maps
+## Fortnite Maps [maps.livfor.it](http://maps.livfor.it)
 
 ### Distance and ETA calculator for Fortnite Battle Royale
-
-Try it out: [maps.livfor.it](http://maps.livfor.it)
 
 ![Gif showcase](img/showcase.gif)
 
