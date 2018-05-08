@@ -14,7 +14,6 @@ a:hover{
 
 *{
     font-family: 'Roboto', sans-serif;
-    color: white;
 }
 
 body{
@@ -22,6 +21,7 @@ body{
     width: 850px;
     margin: 0 auto;
     display: block;
+    color: white;
 }
 
 #canvas{
@@ -39,4 +39,9 @@ body{
     display: block;
     position: relative;
     margin-top: 10px;
+}
+
+#selection{
+    color: black;
+    width: 120px;
 }

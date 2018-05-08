@@ -22,11 +22,13 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 const squareSize = 97;
-var globalScale = .85;
+var globalScale = canvas.width / 1000;
 /* Left-top corner of the camera  */
 var camera = {x: 0, y: 0};
 
 var mouseDown = false;
+var secondMouseDown = false;
+var rightClickDelta = {x: 0, y: 0};
 var distances = new Array();
 var currentHoverPoint = -1;
 var currentMidPoint = -1; // Only positive if the user is hovering over a mid-point.
@@ -38,7 +40,7 @@ window.onload = function () {
     /* Current active point */
     window.activePoint = 0;
     /* Preset points */
-    window.points = [{"x":234,"y":267},{"x":312,"y":438},{"x":441,"y":507}];
+    window.points = [{"x":275.29411764705884,"y":312.94117647058823},{"x":370.5882352941177,"y":515.2941176470588},{"x":601.1764705882354,"y":521.1764705882354}];
     window.map = new Image();
     window.pin = new Image();
     window.pinSelected = new Image();
@@ -76,6 +78,15 @@ canvas.addEventListener("mousemove", e => {
     }
 
     currentMidPoint = getClosestMidPoint();
+
+     if(secondMouseDown && false /*Prevent for now*/){
+        // Move position
+        camera.x += (pos.x + rightClickDelta.x);
+        camera.y += (pos.y + rightClickDelta.y);
+
+        rightClickDelta = Object.assign({}, pos); /* Copy current mouse position */
+        //restrictCamera();
+    }
 
     if (mouseDown) {
         /* If the mouse is down, continuously place the marker to update it's location to give it the drag feel. */
@@ -158,26 +169,36 @@ canvas.addEventListener("mousedown", e => {
         	activePoint = points.length - 1;
         }
       } else {
+          secondMouseDown = true;
+          rightClickDelta = Object.assign({}, pos); /* Copy current mouse position */
           if (closestPoint !== false) {
               points.splice(closestPoint, 1);
           }
       }
 })
 
+
+
 canvas.addEventListener("mouseup", e => {
     /* Place the marker once mouse has been released. */
-	if(e.button != 2) {
-		mouseDown = false;
+    secondMouseDown = false;
+    mouseDown = false;
+    if(e.button != 2) {
 		placeMarker(pos.x, pos.y, activePoint)
 	}
 })
 
-/* canvas.addEventListener("wheel", e => {
+ canvas.addEventListener("wheel", e => {
+    if(true) return; // Prevent (Feature is still in development)
     globalScale-=e.deltaY * .01
     if(globalScale < .85) globalScale = .85;
     focusCameraCenter(pos.x, pos.y);
-}) */
+}) 
 
+
+function changeMap(url){
+    map.src = "img/" + url;
+}
 
 function calculateDistance() {
     var distance = 0;
@@ -208,13 +229,16 @@ function focusCameraCenter(x, y){
     console.log(x);
     camera.y = (canvas.height/2 * globalScale - (y * globalScale));
     //console.log({x: x, y: y, camera_x: camera.x, camera_y: camera.y, scale: globalScale});
+    restrictCamera();
+}
+
+function restrictCamera(){
     while(camera.x > 0) camera.x--;
     while(camera.x < -1000) camera.x++;
     while(camera.y > 0) camera.y--;
     while(camera.y < -1000) camera.y++;
 
     if(Math.round(globalScale * 100) / 100 == .85) camera = {x:0,y:0} // Reset
-    //while(camera.x > 1000) camera.x--;
 }
 
 function draw() {
@@ -264,8 +288,8 @@ function draw() {
 		pinScale = .025;
 		for(let i = 1; i < points.length; i++) {
 			pinCenter = {
-				x: ((points[i].x + points[i - 1].x) / 2) + (1.5 * pin.width * pinScale),
-				y: ((points[i].y + points[i - 1].y) / 2) + (2.5 * pin.height * pinScale)
+				x: (((points[i].x + points[i - 1].x) / 2) + (1.5 * pin.width * pinScale)),
+				y: (((points[i].y + points[i - 1].y) / 2) + (2.5 * pin.height * pinScale))
 			}
 			var texture = pin;
             var shadowDistance = 1.8; // px
@@ -275,9 +299,9 @@ function draw() {
 
             //console.log(distances);
             var text =  (Math.round((distances[i - 1] / squareSize )* 250)) + "m";
-            ctx.fillText(text, ((camera.x+pinCenter.x) * globalScale) + paddingX + shadowDistance, ((camera.y+pinCenter.y) * globalScale) + paddingY - 5 ) // Draw shadow for the text
+            ctx.fillText(text, ((camera.x+pinCenter.x) * globalScale) + paddingX * globalScale + shadowDistance, ((camera.y+pinCenter.y) * globalScale) + paddingY * globalScale) // Draw shadow for the text
             ctx.fillStyle = "white";
-            ctx.fillText(text, ((camera.x+pinCenter.x) * globalScale) + paddingX, ((camera.y+pinCenter.y) * globalScale) + paddingY - 5 ) // Draw individual distance between points
+            ctx.fillText(text, ((camera.x+pinCenter.x) * globalScale) + paddingX* globalScale, ((camera.y+pinCenter.y) * globalScale) + paddingY* globalScale ) // Draw individual distance between points
 
 
             //Could obviously throw in a different texture here.
@@ -290,13 +314,13 @@ function draw() {
     ctx.font = "24px 'Roboto', sans-serif";
 
     ctx.fillStyle = "rgba(0,0,0,0.4)";
-    ctx.fillRect(0, 750, 300, 300);
+    ctx.fillRect(0, canvas.height-100, 300, 300);
 
     ctx.fillStyle = "white";
-    ctx.fillText("Distance (meters): " + Math.round(meters), 10, 830);
+    ctx.fillText("Distance (meters): " + Math.round(meters), 10, canvas.height-20);
     //append 0 before seconds if neccessary
     var formattedSeconds = ("0" + Math.round(time % 60)).slice(-2);
-    ctx.fillText("Time to run: " + Math.floor(time / 60) + ":" + formattedSeconds, 10, 790);
+    ctx.fillText("Time to run: " + Math.floor(time / 60) + ":" + formattedSeconds, 10, canvas.height-60);
 
     requestAnimationFrame(draw);
 }

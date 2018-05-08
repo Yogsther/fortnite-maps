@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118879212-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-118879212-1');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fortnite Maps</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+    <span id="links">
+        <a href="javascript:clear()">Clear all points</a>
+        | Toggle grid
+        <input type="checkbox" checked="true" onclick="toggleGrid(this.checked)"> | Show midpoints
+        <input type="checkbox" checked="true" onclick="showMidpoints(this.checked)"> | Select map:
+        <select id="selection" oninput="changeMap(this.value)">
+            <option value="map.jpg">Season 4 1k</option>
+            <option value="s3-1k.jpg">Season 3 1k</option>
+            <option value="8000xmap.jpg">Season 4 8k</option>
+            <option value="s3-8k.jpg">Season 3 8k</option>
+        </select>
+        | <a href="http://maps.livfor.it/">Hosted on livfor.it</a>
+        | <a href="https://github.com/Yogsther/fortnite-maps">Fork me</a>
+    </span>
+
+    <script src="embed/jquery-3.3.1.min.js"></script>
+    
+    <style>
+        #canvas {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            margin: 0px;
+            margin-top: 0px;
+            box-shadow: none;
+            border-radius: 0px;
+        }
+
+        body {
+            overflow: hidden;
+            background: rgba(0, 0, 0, .9);
+            width: 500px;
+        }
+
+        #links {
+            width: 100%;
+            bottom: 0px;
+            position: absolute;
+            right: 0px;
+        }
+    </style>
+    <script>
+        var screenWidth = $(window).width();
+        canvas.width = screenWidth;
+        canvas.height = screenWidth;
+        document.body.style.width = screenWidth + "px";
+        document.body.style.height = screenWidth + 100 + "px";
+    </script>
+    <script src="maps.js"></script>
+</body>
+
+</html>
