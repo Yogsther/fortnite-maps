@@ -54,6 +54,12 @@ Example: [maps.livfor.it/embed_example](http://maps.livfor.it/embed_example.html
 - [ ]  Package electron app
 - [ ]  Optmize unnecessary big texture sizes
 - [ ]  Zoom and pan features
+  - Work has started on zoom features but are currently not worked on. Feel free to pick this up.
+  - A camera offset and a global scale has been implemented for all drawn textures.
+  - Scroll to zoom has been started on, but not finished. (See eventlistener "wheel")
+  - Left todo:
+    - Zoom in on cursor position relative to camera position (like in-game)
+    - fix hitching bug when moving the camera (right click held down)
 - [ ]  ~~Terrain height calcualtion.~~ Not needed since traveling with ramps has the same horizontal speed.
 
 #### Known bugs:
