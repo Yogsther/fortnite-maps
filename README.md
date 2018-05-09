@@ -13,6 +13,11 @@ Click on an existing marker to move it.
 Right click on a marker to delete it.
 
 #### Recently added:
+- Mobile / Touch support!
+  - Drag and spawn points
+  - Drag out mid-points
+  - Delete specific point in the options menu
+- Option menu for better UI
 - Multiple maps from different seasons and resolutions
 - Iframe embed support
 - Mid-points:
@@ -44,11 +49,11 @@ Example: [maps.livfor.it/embed_example](http://maps.livfor.it/embed_example.html
 - [x]  Spawn mid-points between points
 - [x]  Map option (choose from what season you want the map to be displayed from)
 - [x]  Iframe embed support
-- [ ]  Mobile support (& Manifesto).
-- [ ]  Optimize hud, fewer links with overlay toggle for options menu
-- [ ]  Zoom and pan features (IN-PROGRESS)
+- [x]  Mobile support & manifesto
+- [x]  Optimize hud, fewer links with overlay toggle for options menu
 - [ ]  Package electron app
 - [ ]  Optmize unnecessary big texture sizes
+- [ ]  Zoom and pan features
 - [ ]  ~~Terrain height calcualtion.~~ Not needed since traveling with ramps has the same horizontal speed.
 
 #### Known bugs:

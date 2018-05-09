@@ -19,22 +19,18 @@
     <title>Fortnite Maps</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
+    <!-- Map Canvas -->
     <canvas id="canvas" width="850" height="850"></canvas>
+    <!-- Options overlay -->
+    <span id="overlay-insert"></span>
+    
     <span id="links">
         <a href="javascript:clear()">Clear all points</a>
-        | Toggle grid
-        <input type="checkbox" checked="true" onclick="toggleGrid(this.checked)"> | Show midpoints
-        <input type="checkbox" checked="true" onclick="showMidpoints(this.checked)"> | Select map:
-        <select id="selection" oninput="changeMap(this.value)">
-            <option value="map.jpg">Season 4 1k</option>
-            <option value="s3-1k.jpg">Season 3 1k</option>
-            <option value="8000xmap.jpg">Season 4 8k</option>
-            <option value="s3-8k.jpg">Season 3 8k</option>
-        </select>
-        | <a href="https://github.com/Yogsther/fortnite-maps" target="_blank">Fork me</a>
+        <a href="javascript:toggleOverlay()" id="ignore">Toggle Options</a>
     </span>
 
     <script src="maps.js"></script>

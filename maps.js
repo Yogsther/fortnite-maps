@@ -24,11 +24,18 @@ const ctx = canvas.getContext("2d");
 const squareSize = 97;
 var globalScale = canvas.width / 1000;
 /* Left-top corner of the camera  */
-var camera = {x: 0, y: 0};
+var camera = {
+    x: 0,
+    y: 0
+};
 
 var mouseDown = false;
+var showingOverlay = false;
 var secondMouseDown = false;
-var rightClickDelta = {x: 0, y: 0};
+var rightClickDelta = {
+    x: 0,
+    y: 0
+};
 var distances = new Array();
 var currentHoverPoint = -1;
 var currentMidPoint = -1; // Only positive if the user is hovering over a mid-point.
@@ -40,7 +47,16 @@ window.onload = function () {
     /* Current active point */
     window.activePoint = 0;
     /* Preset points */
-    window.points = [{"x":275.29411764705884,"y":312.94117647058823},{"x":370.5882352941177,"y":515.2941176470588},{"x":601.1764705882354,"y":521.1764705882354}];
+    window.points = [{
+        "x": 275,
+        "y": 312
+    }, {
+        "x": 370,
+        "y": 515
+    }, {
+        "x": 601,
+        "y": 521
+    }];
     window.map = new Image();
     window.pin = new Image();
     window.pinSelected = new Image();
@@ -55,64 +71,90 @@ window.onload = function () {
 
 canvas.addEventListener("touchmove", e => {
     mouseMove(e);
-    console.log("boi");
 })
 
 canvas.addEventListener("touchstart", e => {
-    mouseDownTrigger();
-    console.log("Down", mouseDown);
+    mouseDownTrigger(e);
 })
 
 canvas.addEventListener("touchend", e => {
     mouseUpTrigger();
-    console.log("up", mouseDown);
 })
 
 canvas.addEventListener("mousemove", e => {
     mouseMove(e);
 })
 
-function mouseMove(e){
-/* Get X and Y coordinates for the mouse */
-var rect = canvas.getBoundingClientRect();
-var x = Math.round(e.clientX - rect.left);
-var y = Math.round(e.clientY - rect.top);
+document.addEventListener("click", e => {
+    if(showingOverlay){
+        /* Check if mouseclick is outside the overlay, then remove it. */
+        var found = false;
+        e.path.forEach(element => {
+            if(element.id == "overlay" || element.id == "ignore"){
+                found = true;
+            }
+        })
+        if(!found){
+            // Not found
+            showingOverlay = true;
+            toggleOverlay();
+        }
+    }
+})
 
 
-window.pos = {
-    x: (x / globalScale) - camera.x,
-    y: (y / globalScale) - camera.y
-};
-//console.log(pos);
 
-currentHoverPoint = getClosestPoint();
+function updatePos(e){
+    var clientX, cleintY
+    if(e.clientX == undefined){
+        /* Mobile */
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+    } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+    }
+    var rect = canvas.getBoundingClientRect();
+    var x = Math.round(clientX - rect.left);
+    var y = Math.round(clientY - rect.top);
 
-if (currentHoverPoint !== false) {
-    /* User is hovering over a point */
-    canvas.style.cursor = "move"
-} else {
-    /* User is not hovering over a point */
-    canvas.style.cursor = "pointer"
+    window.pos = {
+        x: (x / globalScale) - camera.x,
+        y: (y / globalScale) - camera.y
+    };
 }
 
-currentMidPoint = getClosestMidPoint();
+function mouseMove(e) {
+    /* Get X and Y coordinates for the mouse */
+    updatePos(e);
+    currentHoverPoint = getClosestPoint();
 
- if(secondMouseDown && false /*Prevent for now*/){
-    // Move position
-    camera.x += (pos.x + rightClickDelta.x);
-    camera.y += (pos.y + rightClickDelta.y);
+    if (currentHoverPoint !== false) {
+        /* User is hovering over a point */
+        canvas.style.cursor = "move"
+    } else {
+        /* User is not hovering over a point */
+        canvas.style.cursor = "pointer"
+    }
 
-    rightClickDelta = Object.assign({}, pos); /* Copy current mouse position */
-    //restrictCamera();
+    currentMidPoint = getClosestMidPoint();
+
+    if (secondMouseDown && false /*Prevent for now*/ ) {
+        // Move position
+        camera.x += (pos.x + rightClickDelta.x);
+        camera.y += (pos.y + rightClickDelta.y);
+
+        rightClickDelta = Object.assign({}, pos); /* Copy current mouse position */
+        //restrictCamera();
+    }
+
+    if (mouseDown) {
+        /* If the mouse is down, continuously place the marker to update it's location to give it the drag feel. */
+        placeMarker(pos.x, pos.y, activePoint)
+    }
 }
 
-if (mouseDown) {
-    /* If the mouse is down, continuously place the marker to update it's location to give it the drag feel. */
-    placeMarker(pos.x, pos.y, activePoint)
-}
-}
-
-canvas.oncontextmenu = function(e) {
+canvas.oncontextmenu = function (e) {
     e.preventDefault();
 };
 
@@ -124,17 +166,17 @@ function getClosestPoint() {
     return false; /* User is not hovering over a point */
 }
 
-function getClosestMidPoint(){
-    if(points.length > 1){ /* Only check for mid-points if there are more than 1 point */
-    for(let i = 1; i < points.length; i++){
-        pinCenter = {
-            x: ((points[i].x + points[i - 1].x) / 2),
-            y: ((points[i].y + points[i - 1].y) / 2)
+function getClosestMidPoint() {
+    if (points.length > 1) { /* Only check for mid-points if there are more than 1 point */
+        for (let i = 1; i < points.length; i++) {
+            pinCenter = {
+                x: ((points[i].x + points[i - 1].x) / 2),
+                y: ((points[i].y + points[i - 1].y) / 2)
+            }
+            var distanceFromCursor = distanceBetweenTwoPoints(pinCenter.x, pinCenter.y, pos.x, pos.y);
+            if (distanceFromCursor < 50) return i;
         }
-        var distanceFromCursor = distanceBetweenTwoPoints(pinCenter.x, pinCenter.y, pos.x, pos.y);
-        if(distanceFromCursor < 50) return i;
-        }
-    return false;
+        return false;
     }
 }
 
@@ -160,69 +202,107 @@ function clear() {
     calculateDistance();
 }
 
-function mouseDownTrigger(){
+function toggleOverlay(){
+    showingOverlay = !showingOverlay; /* Toggle */
+    if(showingOverlay){
+        /* Show overlay */
+        document.getElementById("overlay-insert").innerHTML = '<div id="overlay"> <span class="option">Toggle grid <input type="checkbox" checked="true" onclick="toggleGrid(this.checked)"></span> <span class="option">Show midpoints <input type="checkbox" checked="true" onclick="showMidpoints(this.checked)"></span> <span class="option">Select map: <select id="selection" oninput="changeMap(this.value)"> <option value="map.jpg">Season 4 1k</option> <option value="s3-1k.jpg">Season 3 1k</option> <option value="8000xmap.jpg">Season 4 8k</option> <option value="s3-8k.jpg">Season 3 8k</option> </select></span> <span class="option"><a href="javascript:deleteCurrentPoint()">Delete highlighted point</a></span> <span class="option"><a href="https://github.com/Yogsther/fortnite-maps" target="_blank">Fork me</a></span> </div>';
+    } else {
+        /* Hide overlay */
+        document.getElementById("overlay-insert").innerHTML = '';
+    }
+}
+
+function deleteCurrentPoint(){
+    points.splice(activePoint, 1);
+    activePoint = false;
+}
+
+function mouseDownTrigger(e) {
+    updatePos(e);
     var closestPoint = getClosestPoint();
+    var currentMidPoint = getClosestMidPoint();
+    
     mouseDown = true;
-    if(points.length < 1){
+    if (points.length < 1) {
         // Allow draw out points if there are none placed.
-        points.push({x: pos.x, y: pos.y});
-        points.push({x: pos.x, y: pos.y});
+        points.push({
+            x: pos.x,
+            y: pos.y
+        });
+        points.push({
+            x: pos.x,
+            y: pos.y
+        });
         activePoint++;
         return;
     }
-    if(closestPoint !== false) {
+    if (closestPoint !== false) {
         activePoint = closestPoint;
-    }
-    else if(currentMidPoint !== false) {
+    } else if (currentMidPoint !== false) {
         // !== needed, since !currentMidPoint will return true if the current mid-point is 0!
-        points.splice(currentMidPoint, 0, {x: pos.x, y: pos.y});
-        activePoint = currentMidPoint;
-    }
-    else if (closestPoint === false) {
-          points.push({
-                x: pos.x,
-                y: pos.y
+        points.splice(currentMidPoint, 0, {
+            x: pos.x,
+            y: pos.y
         });
-          activePoint = points.length - 1;
-      }
+        activePoint = currentMidPoint;
+    } else if (closestPoint === false) {
+        points.push({
+            x: pos.x,
+            y: pos.y
+        });
+        activePoint = points.length - 1;
+    }
 }
 
-function mouseUpTrigger(){
+function mouseUpTrigger() {
     secondMouseDown = false;
     mouseDown = false;
 }
 canvas.addEventListener("mousedown", e => {
-	if(e.button != 2) {
-      mouseDownTrigger();
-      } else {
+    if (e.button != 2) {
+        mouseDownTrigger(e);
+    } else {
         var closestPoint = getClosestPoint();
-          secondMouseDown = true;
-          rightClickDelta = Object.assign({}, pos); /* Copy current mouse position */
-          if (closestPoint !== false) {
-              points.splice(closestPoint, 1);
-          }
-      }
+        secondMouseDown = true;
+        rightClickDelta = Object.assign({}, pos); /* Copy current mouse position */
+        if (closestPoint !== false) {
+            points.splice(closestPoint, 1);
+        }
+    }
 })
 
+document.addEventListener("keydown", e => {
+    if(e.keyCode == 27){
+        /* Close overlay */
+        showingOverlay = true;
+        toggleOverlay();
+    }
+    if(e.keyCode == 79){
+        /* Display overlay (O) */
+        showingOverlay = false;
+        toggleOverlay();
+    }
+})
 
 
 canvas.addEventListener("mouseup", e => {
     /* Place the marker once mouse has been released. */
     mouseUpTrigger();
-    if(e.button != 2) {
-		placeMarker(pos.x, pos.y, activePoint)
-	}
+    if (e.button != 2) {
+        placeMarker(pos.x, pos.y, activePoint)
+    }
 })
 
- canvas.addEventListener("wheel", e => {
-    if(true) return; // Prevent (Feature is still in development)
-    globalScale-=e.deltaY * .01
-    if(globalScale < .85) globalScale = .85;
+canvas.addEventListener("wheel", e => {
+    if (true) return; // Prevent (Feature is still in development)
+    globalScale -= e.deltaY * .01
+    if (globalScale < .85) globalScale = .85;
     focusCameraCenter(pos.x, pos.y);
-}) 
+})
 
 
-function changeMap(url){
+function changeMap(url) {
     map.src = "img/" + url;
 }
 
@@ -248,23 +328,24 @@ function showMidpoints(bool) {
     drawMidpoints = bool;
 }
 
-function focusCameraCenter(x, y){
+function focusCameraCenter(x, y) {
     // Focus the center of the camera on this point
-    
-    camera.x += x * globalScale - ((canvas.width/4) * globalScale);
-    console.log(x);
-    camera.y = (canvas.height/2 * globalScale - (y * globalScale));
-    //console.log({x: x, y: y, camera_x: camera.x, camera_y: camera.y, scale: globalScale});
+
+    camera.x += x * globalScale - ((canvas.width / 4) * globalScale);
+    camera.y = (canvas.height / 2 * globalScale - (y * globalScale));
     restrictCamera();
 }
 
-function restrictCamera(){
-    while(camera.x > 0) camera.x--;
-    while(camera.x < -1000) camera.x++;
-    while(camera.y > 0) camera.y--;
-    while(camera.y < -1000) camera.y++;
+function restrictCamera() {
+    while (camera.x > 0) camera.x--;
+    while (camera.x < -1000) camera.x++;
+    while (camera.y > 0) camera.y--;
+    while (camera.y < -1000) camera.y++;
 
-    if(Math.round(globalScale * 100) / 100 == .85) camera = {x:0,y:0} // Reset
+    if (Math.round(globalScale * 100) / 100 == .85) camera = {
+        x: 0,
+        y: 0
+    } // Reset
 }
 
 function draw() {
@@ -285,7 +366,7 @@ function draw() {
 
     /* Stroke */
     ctx.beginPath();
-    for (let i = 0; i < points.length; i++) ctx.lineTo((camera.x+points[i].x) * globalScale, (camera.y+points[i].y) * globalScale);
+    for (let i = 0; i < points.length; i++) ctx.lineTo((camera.x + points[i].x) * globalScale, (camera.y + points[i].y) * globalScale);
     ctx.lineWidth = 8;
     ctx.strokeStyle = "black";
     ctx.stroke();
@@ -309,44 +390,43 @@ function draw() {
         ctx.drawImage(texture, (pinCenter.x + paddingX + camera.x) * globalScale, (pinCenter.y + paddingY + camera.y) * globalScale, pin.width * pinScale, pin.height * pinScale);
     }
 
-	/* Midpoints */
-	if(drawMidpoints) {
-		pinScale = .025;
-		for(let i = 1; i < points.length; i++) {
-			pinCenter = {
-				x: (((points[i].x + points[i - 1].x) / 2) + (1.5 * pin.width * pinScale)),
-				y: (((points[i].y + points[i - 1].y) / 2) + (2.5 * pin.height * pinScale))
-			}
-			var texture = pin;
+    /* Midpoints */
+    if (drawMidpoints) {
+        pinScale = .025;
+        for (let i = 1; i < points.length; i++) {
+            pinCenter = {
+                x: (((points[i].x + points[i - 1].x) / 2) + (1.5 * pin.width * pinScale)),
+                y: (((points[i].y + points[i - 1].y) / 2) + (2.5 * pin.height * pinScale))
+            }
+            var texture = pin;
             var shadowDistance = 1.8; // px
             ctx.textAlign = "center";
             ctx.font = "18px 'Roboto', sans-serif";
             ctx.fillStyle = "#111"; // Shadow
 
-            //console.log(distances);
-            var text =  (Math.round((distances[i - 1] / squareSize )* 250)) + "m";
-            ctx.fillText(text, ((camera.x+pinCenter.x) * globalScale) + paddingX * globalScale + shadowDistance, ((camera.y+pinCenter.y) * globalScale) + paddingY * globalScale) // Draw shadow for the text
+            var text = (Math.round((distances[i - 1] / squareSize) * 250)) + "m";
+            ctx.fillText(text, ((camera.x + pinCenter.x) * globalScale) + paddingX * globalScale + shadowDistance, ((camera.y + pinCenter.y) * globalScale) + paddingY * globalScale) // Draw shadow for the text
             ctx.fillStyle = "white";
-            ctx.fillText(text, ((camera.x+pinCenter.x) * globalScale) + paddingX* globalScale, ((camera.y+pinCenter.y) * globalScale) + paddingY* globalScale ) // Draw individual distance between points
+            ctx.fillText(text, ((camera.x + pinCenter.x) * globalScale) + paddingX * globalScale, ((camera.y + pinCenter.y) * globalScale) + paddingY * globalScale) // Draw individual distance between points
 
 
             //Could obviously throw in a different texture here.
-            if(currentMidPoint == i) texture = pinSelected;
-			ctx.drawImage(texture, (pinCenter.x + paddingX + camera.x) * globalScale, (pinCenter.y + paddingY + camera.y) * globalScale, pin.width * pinScale, pin.height * pinScale);
-		}
-	}
+            if (currentMidPoint == i) texture = pinSelected;
+            ctx.drawImage(texture, (pinCenter.x + paddingX + camera.x) * globalScale, (pinCenter.y + paddingY + camera.y) * globalScale, pin.width * pinScale, pin.height * pinScale);
+        }
+    }
 
     ctx.textAlign = "left";
     ctx.font = "24px 'Roboto', sans-serif";
 
     ctx.fillStyle = "rgba(0,0,0,0.4)";
-    ctx.fillRect(0, canvas.height-100, 300, 300);
+    ctx.fillRect(0, canvas.height - 100, 300, 300);
 
     ctx.fillStyle = "white";
-    ctx.fillText("Distance (meters): " + Math.round(meters), 10, canvas.height-20);
+    ctx.fillText("Distance (meters): " + Math.round(meters), 10, canvas.height - 20);
     //append 0 before seconds if neccessary
     var formattedSeconds = ("0" + Math.round(time % 60)).slice(-2);
-    ctx.fillText("Time to run: " + Math.floor(time / 60) + ":" + formattedSeconds, 10, canvas.height-60);
+    ctx.fillText("Time to run: " + Math.floor(time / 60) + ":" + formattedSeconds, 10, canvas.height - 60);
 
     requestAnimationFrame(draw);
 }
