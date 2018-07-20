@@ -1,0 +1,80 @@
+/* Link atrebutes, change color of links */
+
+a:link{
+    color: white;
+}
+
+a:visited{
+    color: white;
+}
+
+a:hover{ 
+    color: white;
+}
+
+*{
+    font-family: 'Roboto', sans-serif;
+}
+
+body{
+    background: #111;
+    width: 850px;
+    margin: 0px;
+    padding: 0px;
+    position: absolute !important;
+    left: 0px !important;
+    top: 0px !important;
+    color: white;
+    position: relative;
+}
+
+#canvas{
+    position: absolute !important;
+    left: 0px !important;
+    top: 0px !important;
+    box-shadow: 0px 0px 10px black;
+    border-radius: 0px;
+    cursor: pointer;
+}
+
+
+#links{
+    display: block;
+    position: relative;
+    margin-top: 10px;
+}
+
+#selection{
+    color: black;
+    width: 120px;
+}
+
+#overlay{
+    width: 80%;
+    height: 80vh;
+    position: absolute;
+    left: 10%;
+    top: 5vh;
+    background: rgba(0,0,0,0.9);
+    z-index: 10000;
+    border-radius: 0px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+    font-size: 20px;
+    text-align: left;
+}
+
+.option{
+    top: 50px;
+    height: 30px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 80%;
+    position: relative;
+    display: block;
+    left: 10%;
+    transition: all .2s;
+}
+
+.option:hover{
+    left: 10.5%;
+}

@@ -60,7 +60,7 @@ window.onload = function () {
     window.map = new Image();
     window.pin = new Image();
     window.pinSelected = new Image();
-    map.src = "img/map.jpg"
+    map.src = "img/s5-1k.jpg"
     pin.src = "img/pin.png";
     pinSelected.src = "img/pin_selected.png";
     /* Pre calculate to make sure all variables are loaded. */
@@ -206,7 +206,7 @@ function toggleOverlay(){
     showingOverlay = !showingOverlay; /* Toggle */
     if(showingOverlay){
         /* Show overlay */
-        document.getElementById("overlay-insert").innerHTML = '<div id="overlay"> <span class="option">Toggle grid <input type="checkbox" checked="true" onclick="toggleGrid(this.checked)"></span> <span class="option">Show midpoints <input type="checkbox" checked="true" onclick="showMidpoints(this.checked)"></span> <span class="option">Select map: <select id="selection" oninput="changeMap(this.value)"> <option value="map.jpg">Season 4 1k</option> <option value="s3-1k.jpg">Season 3 1k</option> <option value="8000xmap.jpg">Season 4 8k</option> <option value="s3-8k.jpg">Season 3 8k</option> </select></span> <span class="option"><a href="javascript:deleteCurrentPoint()">Delete highlighted point</a></span> <span class="option"><a href="https://github.com/Yogsther/fortnite-maps" target="_blank">Fork me</a></span> </div>';
+        document.getElementById("overlay-insert").innerHTML = '<div id="overlay"> <span class="option">Toggle grid <input type="checkbox" checked="true" onclick="toggleGrid(this.checked)"></span> <span class="option">Show midpoints <input type="checkbox" checked="true" onclick="showMidpoints(this.checked)"></span> <span class="option">Select map: <select id="selection" oninput="changeMap(this.value)"> <option value="s5-1k.jpg">Season 5 1k</option> <option value="map.jpg">Season 4 1k</option> <option value="s3-1k.jpg">Season 3 1k</option> <option value="8000xmap.jpg">Season 4 8k</option> <option value="s3-8k.jpg">Season 3 8k</option> </select></span> <span class="option"><a href="javascript:deleteCurrentPoint()">Delete highlighted point</a></span> <span class="option"><a href="https://github.com/Yogsther/fortnite-maps" target="_blank">Fork me</a></span> </div>';
     } else {
         /* Hide overlay */
         document.getElementById("overlay-insert").innerHTML = '';

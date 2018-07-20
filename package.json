@@ -1,0 +1,27 @@
+{
+  "name": "fortnite-maps",
+  "version": "0.1.0",
+  "description": "App package",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "init": "electron-forge init FortniteMaps",
+    "make": "electron-forge make --platform=wix",
+    "pack": "electron-forge package --platform=wix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yogsther/fortnite-maps.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yogsther/fortnite-maps/issues"
+  },
+  "homepage": "https://github.com/Yogsther/fortnite-maps#readme",
+  "devDependencies": {
+    "electron": "^5.6.0"
+  },
+  "dependencies": {
+  }
+}

@@ -6,6 +6,7 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118879212-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
+
         function gtag() {
             dataLayer.push(arguments);
         }
@@ -19,22 +20,21 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Fortnite Maps</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="app.css">
 </head>
 
 <body>
-     <!-- Map Canvas -->
-     <canvas id="canvas" width="850" height="850"></canvas>
-     <!-- Options overlay -->
-     <span id="overlay-insert"></span>
-     
-     <span id="links">
-         <a href="javascript:clear()">Clear all points</a>
-         <a href="javascript:toggleOverlay()" id="ignore">Toggle Options</a>
-     </span>
- 
-    <script src="embed/jquery-3.3.1.min.js"></script>
-    
+    <!-- Map Canvas -->
+    <canvas id="canvas" width="850" height="850"></canvas>
+    <!-- Options overlay -->
+    <span id="overlay-insert"></span>
+
+    <span id="links">
+        <a href="javascript:clear()">Clear all points</a>
+        <a href="javascript:toggleOverlay()" id="ignore">Toggle Options</a>
+    </span>
+
+
     <style>
         #canvas {
             position: absolute;
@@ -54,19 +54,28 @@
 
         #links {
             width: 100%;
-            bottom: 8vh;
+            bottom: 10px;
             position: absolute;
-            right: 0px;
+            left: 10px;
         }
+
+        #overlay {
+            width: 680px;
+            height: 680px;
+            position: absolute;
+            left: 85px;
+            top: 42.5px;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            border-radius: 0px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            font-size: 20px;
+            text-align: left;
+        }
+
+
     </style>
-    <script>
-        var screenWidth = $(window).width();
-        canvas.width = screenWidth;
-        canvas.height = screenWidth;
-        document.body.style.width = screenWidth + "px";
-        document.body.style.height = screenWidth + 100 + "px";
-        console.log(screenWidth);
-    </script>
+
     <script src="maps.js"></script>
 </body>
 
