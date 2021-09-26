@@ -1,4 +1,4 @@
-## Fortnite Maps [maps.livfor.it](http://maps.livfor.it)
+## Fortnite Maps [maps.ygstr.com](https://maps.ygstr.com/)
 
 ### Distance and ETA calculator for Fortnite Battle Royale
 
@@ -27,7 +27,7 @@ Right click on a marker to delete it.
 - Optional grid
 - Better distance presentation
 
-#### Embed:
+#### Embed (depricated, use maps.ygstr.com instead):
 
 It's very easy to embed this into your own website!
 Just paste the iframe code below in the body. You can change the height and width to your own desire, just make
