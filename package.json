@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/Yogsther/fortnite-maps#readme",
   "devDependencies": {
-    "electron": "^5.6.0"
+    "electron": "^15.5.5"
   },
   "dependencies": {
   }
